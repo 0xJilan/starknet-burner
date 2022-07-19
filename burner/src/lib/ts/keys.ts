@@ -2,12 +2,16 @@ import { ec } from 'starknet';
 import { toBN } from 'starknet/utils/number';
 import type { Txn } from '$lib/ts/txns';
 import { wallet, renewSessionKey } from '$lib/stores/wallet';
-import { setState } from '$lib/stores/burner';
+import { burner, setState } from '$lib/stores/burner';
 export const loadKeys = () => {
 	let sessPrivateKey = localStorage.getItem('bwpk');
 	if (!sessPrivateKey || sessPrivateKey === '') {
 		renewSessionKey();
 		setState('keys');
+		burner.update((data) => ({
+			...data,
+			isLoggedIn: true
+		}));
 		return;
 	}
 	let keypair = ec.getKeyPair(toBN(sessPrivateKey));
@@ -23,10 +27,13 @@ export const loadKeys = () => {
 			};
 			return {
 				...data,
-				token,
-				isLoggedIn: true
+				token
 			};
 		});
+		burner.update((data) => ({
+			...data,
+			isLoggedIn: true
+		}));
 		return;
 	}
 	let tokenData = JSON.parse(bwtk);
@@ -46,10 +53,13 @@ export const loadKeys = () => {
 		return {
 			...data,
 			token,
-			history,
-			isLoggedIn: true
+			history
 		};
 	});
+	burner.update((data) => ({
+		...data,
+		isLoggedIn: true
+	}));
 	return;
 };
 

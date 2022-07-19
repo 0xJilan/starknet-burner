@@ -29,7 +29,7 @@
 </script>
 
 <div class="burner">
-	{#if !$wallet.isLoggedIn}
+	{#if !$burner.isLoggedIn}
 		loading...
 	{:else if $burner.state == 'renewkey'}
 		<RenewKeys />
@@ -37,7 +37,10 @@
 		<RegisterKeys />
 	{:else if $burner.state == 'view'}
 		<ul class="key">
-			<li>{$wallet.token?.account?.slice(0, 6)}...{$wallet.token?.account?.slice(-4)}</li>
+			<li>{$wallet.token?.account}</li>
+		</ul>
+		<ul class="key">
+			<li>{$wallet.token?.sessionkey}</li>
 		</ul>
 		<div class="command">
 			<button class="refresh" on:click={allBalance}><RefreshIcon /></button>

@@ -39,8 +39,7 @@ export const saveToken = async (
 		return {
 			...data,
 			token,
-			history: tx,
-			isLoggedIn: true
+			history: tx
 		};
 	});
 };
@@ -230,7 +229,6 @@ export const refreshTxn = async (hash: string) => {
 export const wallet = writable({
 	lastError: null,
 	loading: false,
-	isLoggedIn: false,
 	token: {
 		sessionkey: '',
 		account: '',
