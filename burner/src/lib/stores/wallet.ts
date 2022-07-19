@@ -46,36 +46,26 @@ export const saveToken = async (
 };
 
 export const renewSessionKey = () => {
+	console.log('renew session key');
 	let [pk, publicKey] = genKey();
 	if (!pk || !publicKey) {
 		throw new Error('failed to generate key');
 	}
-	localStorage.setItem('bwpk', pk);
-	let token = localStorage.getItem('bwtk');
-	if (!token || token === '') {
-		return;
-	}
-	let tokenData = JSON.parse(token);
-	localStorage.setItem(
-		'bwtk',
-		JSON.stringify({
-			sessionkey: publicKey as string,
-			account: tokenData.account,
-			expires: 0,
-			token: [] as string[]
-		})
-	);
 	wallet.update((data) => {
 		return {
 			...data,
 			token: {
 				sessionkey: publicKey as string,
-				account: tokenData.account,
+				account: '',
 				expires: 0,
 				token: [] as string[]
 			}
 		};
 	});
+	console.log('renew storage');
+	localStorage.setItem('bwpk', pk);
+	localStorage.removeItem('bwtk');
+	localStorage.removeItem('bwtx');
 };
 
 const BASEURL = 'https://alpha4.starknet.io';

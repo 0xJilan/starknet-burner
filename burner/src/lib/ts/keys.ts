@@ -1,18 +1,14 @@
 import { ec } from 'starknet';
 import { toBN } from 'starknet/utils/number';
 import type { Txn } from '$lib/ts/txns';
-import { wallet } from '$lib/stores/wallet';
-
+import { wallet, renewSessionKey } from '$lib/stores/wallet';
+import { setState } from '$lib/stores/burner';
 export const loadKeys = () => {
 	let sessPrivateKey = localStorage.getItem('bwpk');
 	if (!sessPrivateKey || sessPrivateKey === '') {
-		sessPrivateKey = `0x${ec.genKeyPair().getPrivate().toString(16)}`;
-		if (!sessPrivateKey) {
-			throw new Error('failed to generate key');
-		}
-		localStorage.setItem('bwpk', sessPrivateKey);
-		localStorage.removeItem('bwtk');
-		localStorage.removeItem('bwtx');
+		renewSessionKey();
+		setState('keys');
+		return;
 	}
 	let keypair = ec.getKeyPair(toBN(sessPrivateKey));
 	let sessPublicKey = ec.getStarkKey(keypair);
